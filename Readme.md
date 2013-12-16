@@ -1,6 +1,6 @@
 # OceanDebrant
 
-VirtualBox + Digital Ocean Vagrant project starter kit.
+VirtualBox + [DigitalOcean](https://www.digitalocean.com/?refcode=f0f450f173bf) Vagrant project starter kit.
 
 This Vagrant setup create a local development setup alongside a Digital Ocean droplet with the same setup.
 
@@ -36,7 +36,7 @@ vagrant up --provider digital_ocean
 #### Vagrant 
 
 * Copy `Vagrantfile-sample` to `Vagrantile`
-* Modify `ocean.client_id`, `ocean.api_key` and `ocean.region` with your own Digital Ocean settings.
+* Modify `ocean.client_id`, `ocean.api_key` and `ocean.region` with your own [DigitalOcean](https://www.digitalocean.com/?refcode=f0f450f173bf) settings.
 
 #### WordPress
 
