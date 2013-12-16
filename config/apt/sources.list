@@ -1,4 +1,4 @@
-deb http://ftp.it.debian.org/debian wheezy main contrib non-free
+deb http://ftp.ie.debian.org/debian wheezy main contrib non-free
 deb http://security.debian.org/ wheezy/updates main
 deb http://repo.percona.com/apt wheezy main
 deb http://repo.varnish-cache.org/debian/ wheezy varnish-3.0
