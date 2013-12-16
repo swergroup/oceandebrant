@@ -71,9 +71,9 @@ apt_package_check_list=(
 	unar
 	unrar
 	unzip
+	varnish
 	vim
 	wget
-	yui-compressor
 	zsh
 )
 
@@ -123,14 +123,14 @@ function newstep {
 
 
 function main_header {
-	echo -e "${bldred}
+	echo -e "${bldcyn}
   ___                       ____       _                     _   
  / _ \  ___ ___  __ _ _ __ |  _ \  ___| |__  _ __ __ _ _ __ | |_ 
 | | | |/ __/ _ \/ _\` | '_ \| | | |/ _ \ '_ \| '__/ _\` | '_ \| __|
 | |_| | (_|  __/ (_| | | | | |_| |  __/ |_) | | | (_| | | | | |_ 
  \___/ \___\___|\__,_|_| |_|____/ \___|_.__/|_|  \__,_|_| |_|\__| 
 ${txtrst}
-VirtualBox + Digital Ocean starter kit v. ${txtgrn}$debrant_version${txtrst}
+VirtualBox + Digital Ocean starter kit v. ${txtcyn}$debrant_version${txtrst}
 ${txtund}https://github.com/swergroup/oceandebrant${txtreset}
 "
 }
@@ -153,7 +153,7 @@ function do_apt {
 
   echo -e "${list} sources.list"
 	unlink /etc/apt/sources.list
-	cp /srv/config/apt/sources.list /etc/apt/sources.list
+	cp /vagrant/config/apt/sources.list /etc/apt/sources.list
 	apt-get update --assume-yes
 
 	newstep "System packages"
@@ -195,30 +195,44 @@ function do_mysql {
 	#	mv /etc/mysql/my.cnf /etc/mysql/my.cnf-backup
 	  echo -e "${list} my.cnf setup"
 		unlink /etc/mysql/my.cnf
-		cp /srv/config/mysql/my.cnf /etc/mysql/my.cnf
+		cp /vagrant/config/mysql/my.cnf /etc/mysql/my.cnf
 		echo -e "${list} Restart service"
 		service mysql restart
 		mysql -u root -proot -e "CREATE FUNCTION fnv1a_64 RETURNS INTEGER SONAME 'libfnv1a_udf.so'"
 		mysql -u root -proot -e "CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so'"
 		mysql -u root -proot -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so'"
 	fi
-	if [ -f /srv/config/database/init-custom.sql ]
+	if [ -f /vagrant/database/init-custom.sql ]
 	then
 	  # Create the databases (unique to system) that will be imported with
 	  # the mysqldump files located in database/backups/
 	  echo -e "${list} Custom MySQL setup..."
-		mysql -u root < /srv/config/database/init-custom.sql
+		mysql -u root -proot < /vagrant/database/init-custom.sql
 	else
 	  # Setup MySQL by importing an init file that creates necessary
 	  # users and databases that our vagrant setup relies on.
 	  echo -e "${list} Default MySQL setup.."
-	  mysql -u root < /srv/config/database/init.sql
+	  mysql -u root -proot < /vagrant/database/init.sql
 	fi
 	# Process each mysqldump SQL file in database/backups to import 
 	# an initial data set for MySQL.
 	#/srv/database/import-sql.sh
 }
 
+function do_php5conf {
+	newstep "PHP5 configuration"
+	echo -e "${list} Disable xdebug"
+	php5dismod xdebug
+	echo -e "${list} pool.d/www.conf"
+	unlink /etc/php5/fpm/pool.d/www.conf
+	cp /vagrant/config/php5/poold-www.conf /etc/php5/fpm/pool.d/www.conf
+	#echo -e "${list} conf.d/php-custom.ini"
+	#ln -sf /vagrant/config/php5/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
+	#echo -e "${list} conf.d/xdebug.ini"
+	#ln -sf /vagrant/config/php5/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
+	#echo -e "${list} conf.d/apc.ini"
+	#ln -sf /vagrant/config/php5/apc.ini /etc/php5/fpm/conf.d/apc.ini
+}
 
 function do_nginx {
 
@@ -227,12 +241,12 @@ function do_nginx {
 	if [ ! -f /etc/nginx/nginx-wp-common.conf ]; then
 		echo -e "${list} /etc/nginx/nginx.conf"
 	  cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf-backup
-	  cp /srv/config/nginx/nginx.conf /etc/nginx/nginx.conf
+	  cp /vagrant/config/nginx/nginx.conf /etc/nginx/nginx.conf
 
 		echo -e "${list} /etc/nginx/nginx-wp-common.conf"
-	  cp /srv/config/nginx/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+	  cp /vagrant/config/nginx/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
 		echo -e "${list} /etc/nginx/custom-sites"
-	  cp /srv/config/nginx/sites-available/* /etc/nginx/sites-available
+	  cp /vagrant/config/nginx/sites-available/* /etc/nginx/sites-available
 	fi
 	if [ ! -e /etc/nginx/server.key ]; then
 	  echo -e "${list} Generate Nginx server private key..."
@@ -250,20 +264,16 @@ function do_nginx {
 	fi
 }
 
-function do_php5conf {
-	newstep "PHP5 configuration"
-	echo -e "${list} Disable xdebug"
-	php5dismod xdebug
-	echo -e "${list} pool.d/www.conf"
-	ln -sf /srv/config/php5/poold-www.conf /etc/php5/fpm/pool.d/www.conf
-	#echo -e "${list} conf.d/php-custom.ini"
-	#ln -sf /srv/config/php5/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
-	#echo -e "${list} conf.d/xdebug.ini"
-	#ln -sf /srv/config/php5/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
-	#echo -e "${list} conf.d/apc.ini"
-	#ln -sf /srv/config/php5/apc.ini /etc/php5/fpm/conf.d/apc.ini
-}
 
+function do_varnish {
+	newstep "Varnish setup"
+	if [ ! -f /etc/varnish/wordpress.vcl ]; then
+		echo -e "${list} Default Varnish setup"
+		cp /vagrant/config/varnish/default_varnish /etc/default/varnish
+		echo -e "${list} WordPress VCL"
+		cp /vagrant/config/varnish/wordpress.vcl /etc/varnish/wordpress.vcl
+	fi
+}
 
 
 function do_utils {
@@ -293,8 +303,9 @@ function clean_system {
 	echo -e "${list} Restarting services.."
 	service memcached restart
 	service mysql restart
-	service nginx restart
 	service php5-fpm restart
+	service nginx restart
+	service varnish restart
 }
 
 function main_footer {
@@ -325,8 +336,9 @@ export DEBIAN_FRONTEND=noninteractive
 main_header
 do_apt
 do_mysql
-do_nginx
 do_php5conf
+do_nginx
+do_varnish
 do_utils
 clean_system
 main_footer

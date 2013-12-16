@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
 	  end
 		
   # /srv/config/
-  config.vm.synced_folder "config/", "/srv/config"
+  # config.vm.synced_folder "config/", "/srv/config"
   config.vm.synced_folder "www/", "/srv/www"
 
   # /srv/www/

@@ -8,7 +8,6 @@ do_install(){
 	wp plugin activate pods
 	wp plugin activate uploadplus
 	wp plugin activate wordpress-importer
-	wp plugin activate w3-total-cache
 }
 
 do_update(){

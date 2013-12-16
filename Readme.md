@@ -1,6 +1,8 @@
 # OceanDebrant
 
-VirtualBox + Digital Ocean Vagrant project starter kit
+VirtualBox + Digital Ocean Vagrant project starter kit.
+
+This Vagrant setup create a local development setup alongside a Digital Ocean droplet with the same setup.
 
 ## Features
 
@@ -22,9 +24,25 @@ VirtualBox + Digital Ocean Vagrant project starter kit
 
 ## Setup
 
-* Download and install [wheezy32 Vagrant box](http://tools.swergroup.com/downloads/wheezy32.box):
+```
+git clone https://github.com/swergroup/oceandebrant.git
+cd oceandebrant
+vagrant up --provider virtualbox
+vagrant up --provider digital_ocean
+```
 
-```
-vagrant box add wheezy32 http://tools.swergroup.com/downloads/wheezy32.box
-vagrant box add digital_ocean https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box
-```
+### Configuration
+
+#### Vagrant 
+
+* Copy `Vagrantfile-sample` to `Vagrantile`
+* Modify `ocean.client_id`, `ocean.api_key` and `ocean.region` with your own Digital Ocean settings.
+
+#### WordPress
+
+Fork the repository, create a branch and modify WordPress configuration files:
+
+* `config/nginx/sites-available/wordpress.conf`
+* `www/wordpress/composer.json`
+* `www/wordpress/wp-cli.yml`
+
