@@ -169,10 +169,10 @@ function do_apt {
 	done
 	if [ ${#apt_package_install_list[@]} = 0 ];
 	then 
-	  echo -e "${pass} Nothing to do!"
+	  echo -e "${pass} Nothing to do."
 	else
 	  echo -e "${list} Installing packages.."
-		aptitude purge ~c
+		aptitude purge ~c -y
 		apt-get install --force-yes --assume-yes ${apt_package_install_list[@]}
 		apt-get clean
 	fi
@@ -247,6 +247,8 @@ function do_nginx {
 	  cp /vagrant/config/nginx/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
 		echo -e "${list} /etc/nginx/custom-sites"
 	  cp /vagrant/config/nginx/sites-available/* /etc/nginx/sites-available
+	else
+	  echo -e "${pass} Nothing to do."
 	fi
 	if [ ! -e /etc/nginx/server.key ]; then
 	  echo -e "${list} Generate Nginx server private key..."
@@ -272,6 +274,8 @@ function do_varnish {
 		cp /vagrant/config/varnish/default_varnish /etc/default/varnish
 		echo -e "${list} WordPress VCL"
 		cp /vagrant/config/varnish/wordpress.vcl /etc/varnish/wordpress.vcl
+	else
+	  echo -e "${pass} Nothing to do."
 	fi
 }
 
