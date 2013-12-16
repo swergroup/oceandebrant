@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 debrant_version='0.2.1'
 
 ## Tunables
@@ -146,6 +144,10 @@ function do_apt {
 	  echo -e "${list} GPG keys setup"
 		# percona server (mysql)
 		apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A	2>&1 > /dev/null
+		
+		#grml
+		apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null
+		
 		# varnish
 		wget -qO- http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
 
@@ -204,68 +206,33 @@ function do_mysql {
 	then
 	  # Create the databases (unique to system) that will be imported with
 	  # the mysqldump files located in database/backups/
-	  echo -e "${list} Custom MySQL setup..."
-		mysql -u root < /srv/database/init-custom.sql
+	  #echo -e "${list} Custom MySQL setup..."
+		#mysql -u root < /srv/database/init-custom.sql
 	else
 	  # Setup MySQL by importing an init file that creates necessary
 	  # users and databases that our vagrant setup relies on.
-	  echo -e "${list} Default MySQL setup.."
-	  mysql -u root < /srv/database/init.sql
+	  #echo -e "${list} Default MySQL setup.."
+	  #mysql -u root < /srv/database/init.sql
 	fi
 	# Process each mysqldump SQL file in database/backups to import 
 	# an initial data set for MySQL.
-	/srv/database/import-sql.sh
+	#/srv/database/import-sql.sh
 }
 
-function do_utils {
-	newstep "Utilities setup"
-	if which composer &>/dev/null;
-	then
-		echo -e "${list} Updating Composer.."
-		composer self-update
-	else
-		echo -e "${list} Installing Composer.."
-		curl -sS https://getcomposer.org/installer | php
-		chmod +x composer.phar
-		mv composer.phar /usr/local/bin/composer
-	fi
-	composer --version
-
-	if [ ! -d /srv/www/wp-cli ]
-	then
-	  echo -e "${list} Cloning wp-cli repository"
-		git clone git://github.com/wp-cli/wp-cli.git /srv/www/wp-cli
-		cd /srv/www/wp-cli
-	  echo -e "${list} Installing wp-cli"
-		composer install
-	  echo -e "${list} Installing wp-cli community packages"
-		composer config repositories.wp-cli composer http://wp-cli.org/package-index/
-		for pack in "${wpcli_packages[@]}"
-		do
-			echo -e "  ${list} $pack"
-		  composer require $pack &>/dev/null
-		done
-	else
-	  echo -e "${list} Updating wp-cli"
-		cd /srv/www/wp-cli
-		composer update
-	fi
-	echo -e "${list} wp-cli symlink"
-	ln -sf /srv/www/wp-cli/bin/wp /usr/local/bin/wp
-	wp --info
-}
 
 function do_nginx {
 
 	newstep "Nginx configuration"
+
 	if [ ! -f /etc/nginx/nginx-wp-common.conf ]; then
-	  cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf-default
 		echo -e "${list} /etc/nginx/nginx.conf"
-	  ln -sf /srv/config/nginx/nginx.conf /etc/nginx/nginx.conf
+	  cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf-backup
+	  cp /srv/config/nginx/nginx.conf /etc/nginx/nginx.conf
+
 		echo -e "${list} /etc/nginx/nginx-wp-common.conf"
-	  ln -sf /srv/config/nginx/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
+	  cp /srv/config/nginx/nginx-wp-common.conf /etc/nginx/nginx-wp-common.conf
 		echo -e "${list} /etc/nginx/custom-sites"
-	  ln -sf /srv/config/nginx/sites /etc/nginx/custom-sites
+	  cp /srv/config/nginx/sites-available/* /etc/nginx/sites-available
 	fi
 	if [ ! -e /etc/nginx/server.key ]; then
 	  echo -e "${list} Generate Nginx server private key..."
@@ -288,13 +255,13 @@ function do_php5conf {
 	echo -e "${list} Disable xdebug"
 	php5dismod xdebug
 	echo -e "${list} pool.d/www.conf"
-	ln -sf /srv/config/php5/www.conf /etc/php5/fpm/pool.d/www.conf
-	echo -e "${list} conf.d/php-custom.ini"
-	ln -sf /srv/config/php5/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
-	echo -e "${list} conf.d/xdebug.ini"
-	ln -sf /srv/config/php5/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
-	echo -e "${list} conf.d/apc.ini"
-	ln -sf /srv/config/php5/apc.ini /etc/php5/fpm/conf.d/apc.ini
+	ln -sf /srv/config/php5/poold-www.conf /etc/php5/fpm/pool.d/www.conf
+	#echo -e "${list} conf.d/php-custom.ini"
+	#ln -sf /srv/config/php5/php-custom.ini /etc/php5/fpm/conf.d/php-custom.ini
+	#echo -e "${list} conf.d/xdebug.ini"
+	#ln -sf /srv/config/php5/xdebug.ini /etc/php5/fpm/conf.d/xdebug.ini
+	#echo -e "${list} conf.d/apc.ini"
+	#ln -sf /srv/config/php5/apc.ini /etc/php5/fpm/conf.d/apc.ini
 }
 
 function clean_system {
@@ -315,23 +282,18 @@ function main_footer {
 
 
 	cat <<BRANDING > /etc/motd
-______     _                     _   
-|  _  \   | |                   | |  
-| | | |___| |__  _ __ __ _ _ __ | |_ 
-| | | / _ \ '_ \| '__/ _\` | '_ \| __|
-| |/ /  __/ |_) | | | (_| | | | | |_ 
-|___/ \___|_.__/|_|  \__,_|_| |_|\__|
+     _ _       _ _        _                              
+  __| (_) __ _(_) |_ __ _| |   ___   ___ ___  __ _ _ __  
+ / _\` | |/ _\` | | __/ _\` | |  / _ \ / __/ _ \/ _\` | '_ \ 
+| (_| | | (_| | | || (_| | | | (_) | (_|  __/ (_| | | | |
+ \__,_|_|\__, |_|\__\__,_|_|  \___/ \___\___|\__,_|_| |_|
+         |___/                                           
 
 BRANDING
 
-	echo $debrant_version > /etc/debrant_version
+	echo $debrant_version > /etc/digital_ocean_provision
 
-	newstep "Your ${txtred}Debrant${txtreset}${bldwht} is ready!"
-
-	echo -e "${txtwht}Please add these to your /etc/hosts file:${txtreset}\n"
-	echo -e "192.168.100.11   debrant.dev${txtreset}"
-	echo -e "192.168.100.11   themetest.debrant.dev${txtreset}"
-	echo -e "192.168.100.11   network.debrant.dev${txtreset}"
+	newstep "Your ${txtred}Digital Ocean Debrant${txtreset}${bldwht} is ready!"
 
 	echo -e "\n${txtwht}Code repository and issue tracking:"
 	echo -e "${txtund}https://github.com/swergroup/debrant${txtreset}\n"
@@ -344,9 +306,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 main_header
 do_apt
-#do_mysql
-#do_utils
-#do_nginx
-#do_php5conf
-#clean_system
-#main_footer
+do_mysql
+do_nginx
+do_php5conf
+clean_system
+main_footer
