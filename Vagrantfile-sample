@@ -16,6 +16,7 @@ Vagrant.configure("2") do |config|
   # established on the host machine inside the guest. See the manual for ssh-add
   config.ssh.forward_agent = true
 	config.vm.box = "wheezy32"
+	config.vm.box_url = "http://tools.swergroup.com/downloads/wheezy32.box"
 	config.vm.hostname = "oceandebrant"
 
 	config.vm.provider :virtualbox do |vb|
@@ -24,6 +25,7 @@ Vagrant.configure("2") do |config|
 		
 	config.vm.provider :digital_ocean do |ocean, override|
 	  	override.vm.box = "digital_ocean"
+			override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
 			ocean.client_id = ""
 			ocean.api_key = ""
 			ocean.image = "Debian 7.0 x64"
@@ -53,8 +55,8 @@ Vagrant.configure("2") do |config|
   end
 
   # Websites provision script
-  if File.exists?(File.join(vagrant_dir,'provision','30-websites.sh')) then
-    config.vm.provision :shell, :path => File.join( "provision", "30-websites.sh" )
+  if File.exists?(File.join(vagrant_dir,'provision','30-utils.sh')) then
+    config.vm.provision :shell, :path => File.join( "provision", "30-utils.sh" )
   end
 
 end
