@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH="/srv/www/wordpress/vendor/bin/:$PATH"
 
 do_install(){
 	wp core config
@@ -29,8 +30,7 @@ do
 			do_update
 			exit 0
 			;;
-		-h | --help)
-		-*)
+		* | -h | --help)
 			echo "Usage: $0 [-i|--install] [-u|--update] "
 			exit 0
 			;;
@@ -38,12 +38,5 @@ do
 			shift
 			break
 			;;
-		*)
-			break
-			;;
-	esac
-
-	default
-	in
 	esac
 done

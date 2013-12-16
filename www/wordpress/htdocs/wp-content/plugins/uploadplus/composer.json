@@ -1,0 +1,28 @@
+{
+  "name"        : "swergroup/uploadplus",
+  "description" : "UploadPlus WordPress plugin",
+  "authors"     : [
+    {
+      "name"    : "Paolo Tresso (pixline)",
+      "email"   : "plugins@swergroup.com",
+      "homepage": "http://swergroup.com/"
+    }
+  ],
+  "type"        : "project",
+  "repositories": [
+    {
+      "type": "composer",
+      "url" : "http://wpackagist.org"
+    }
+  ],
+  "config"      : {
+    "vendor-dir": "vendor"
+  },
+  "require"     : {
+  },
+  "require-dev" : {
+    "phpmd/phpmd"              : "1.4.*"
+  },
+  "extra"       : {
+  }
+}

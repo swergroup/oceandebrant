@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-30 17:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: inc/admin.class.php:19
+msgid "is mantained and developed by"
+msgstr ""
+
+#: inc/admin.class.php:19
+msgid "with the help of the open source community."
+msgstr ""
+
+#: inc/admin.class.php:22
+msgid "Support forum on wordpress.org"
+msgstr ""
+
+#: inc/admin.class.php:23
+msgid "Code repository on Github"
+msgstr ""
+
+#: inc/admin.class.php:24
+msgid "Build status on Travis CI"
+msgstr ""
+
+#: inc/admin.class.php:27
+msgid ""
+"Found this plugin useful? Would like to thanks developers and support team? "
+"Need a new feature? Feel free to"
+msgstr ""
+
+#: inc/admin.class.php:27
+msgid "sponsor a coding session!"
+msgstr ""
+
+#: inc/admin.class.php:30
+msgid ""
+"UploadPlus will clean and customize your uploads' file and post name with "
+"your own style."
+msgstr ""
+
+#: inc/admin.class.php:32 uploadplus.php:124
+msgid "Separator"
+msgstr ""
+
+#: inc/admin.class.php:32
+msgid "change whitespaces into dashes or underscores."
+msgstr ""
+
+#: inc/admin.class.php:33
+msgid "Case"
+msgstr ""
+
+#: inc/admin.class.php:33
+msgid "lowercase, UPPERCASE or CamelCase."
+msgstr ""
+
+#: inc/admin.class.php:34
+msgid "Prefix"
+msgstr ""
+
+#: inc/admin.class.php:34
+msgid "date/time, blogname, random, custom..."
+msgstr ""
+
+#: inc/admin.class.php:35 uploadplus.php:136
+msgid "Transliteration"
+msgstr ""
+
+#: inc/admin.class.php:35
+msgid ""
+"convert any non-latin script to latin characters. <a href=\"http://en."
+"wikipedia.org/wiki/Transliteration\">Learn More</a>"
+msgstr ""
+
+#: inc/admin.class.php:36 uploadplus.php:139
+msgid "Random File Name"
+msgstr ""
+
+#: inc/admin.class.php:36
+msgid "Every file is unique!"
+msgstr ""
+
+#: inc/admin.class.php:42
+msgid "Test file name:"
+msgstr ""
+
+#: inc/admin.class.php:43
+msgid "Output:"
+msgstr ""
+
+#: inc/admin.class.php:77
+msgid "leave as is"
+msgstr ""
+
+#: inc/admin.class.php:78
+msgid "lowercase"
+msgstr ""
+
+#: inc/admin.class.php:79
+msgid "UPPERCASE"
+msgstr ""
+
+#: inc/admin.class.php:80
+msgid "CamelCase"
+msgstr ""
+
+#: inc/admin.class.php:120
+msgid "Random"
+msgstr ""
+
+#: inc/admin.class.php:121
+msgid "Random 2x"
+msgstr ""
+
+#: inc/admin.class.php:122
+msgid "Blog name"
+msgstr ""
+
+#: inc/admin.class.php:123
+msgid "Short blog name"
+msgstr ""
+
+#: inc/admin.class.php:124
+msgid "WordPress unique filename"
+msgstr ""
+
+#: inc/admin.class.php:130
+msgid "No prefix / custom prefix"
+msgstr ""
+
+#: inc/admin.class.php:131
+msgid "Date/time based prefix"
+msgstr ""
+
+#: inc/admin.class.php:141
+msgid "Others"
+msgstr ""
+
+#: inc/admin.class.php:161
+msgid "Leave as is"
+msgstr ""
+
+#: inc/admin.class.php:162
+msgid "Transliterate into latin characters"
+msgstr ""
+
+#: uploadplus.php:50
+msgid "UploadPlus requires WordPress 3.3 or newer"
+msgstr ""
+
+#: uploadplus.php:122
+msgid "UploadPlus options"
+msgstr ""
+
+#: uploadplus.php:127
+msgid "Letter Case"
+msgstr ""
+
+#: uploadplus.php:130
+msgid "File Prefix"
+msgstr ""
+
+#: uploadplus.php:133
+msgid "Custom Prefix"
+msgstr ""
