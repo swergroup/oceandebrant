@@ -1,17 +1,17 @@
-url: http://wordpress.dev
+url: http://dev.oceandebrant.wp
 path: /srv/www/wordpress/htdocs/
 
 core config:
-  dbname: wordpress_dev
-  dbuser: wp
-  dbpass: password
+  dbname: wp_oceandebrant
+  dbuser: oceandebrant
+  dbpass: oceandebrant
   dbhost: localhost
   locale: it_IT
 
 core install:
-  url: http://wordpress.dev
-  title: WordPress
-  admin_user: admin
+  url: http://dev.oceandebrant.wp
+  title: OceanDebrant
+  admin_user: oceandebrant
   admin_email: admin@example.org
-  admin_password: Sw3rgr0up
+  admin_password: oceandebrant
   
