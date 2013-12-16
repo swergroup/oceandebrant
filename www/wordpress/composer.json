@@ -1,0 +1,66 @@
+{
+    "repositories": [
+      {
+        "type":"composer",
+        "url":"http://wpackagist.org"
+      },
+      {
+        "type": "package",
+        "package": {
+          "name": "wordpress",
+          "type": "webroot",
+          "version": "3.8",
+          "dist": {
+            "type": "zip",
+            "url": "https://github.com/WordPress/WordPress/archive/3.8.zip"
+          },
+          "require" : {
+            "fancyguy/webroot-installer": "1.0.0"
+          }
+        }
+      },
+      {
+        "type": "package",
+        "package": {
+          "name": "roots/roots",
+          "type": "wordpress-theme",
+          "version": "6.5.1",
+          "dist": {
+            "type": "zip",
+            "url": "https://github.com/roots/roots/archive/6.5.1.zip"
+          }
+        }
+      }
+    ],
+    "require": {
+      "composer/installers": "v1.0.6",
+      "fancyguy/webroot-installer": "1.0.0",
+      "php": ">=5.3.0",
+      "wordpress": "3.8",
+      "wp-cli/wp-cli": "0.13.0",
+      "roots/roots": "6.5.1",
+      "wpackagist/pods": "*",
+      "wpackagist/uploadplus": "*",
+      "wpackagist/wordpress-importer": "*",
+      "wpackagist/w3-total-cache": "*"
+    },
+    "extra": {
+      "webroot-dir": "htdocs",
+      "webroot-package": "wordpress",
+      "installer-paths": {
+        "htdocs/wp-content/plugins/{$name}" : [ 
+          "wpackagist/pods", 
+          "wpackagist/uploadplus", 
+          "wpackagist/wordpress-importer",
+          "wpackagist/w3-total-cache"
+        ],
+        "htdocs/wp-content/themes/{$name}" : [
+          "roots/roots"
+        ]
+      }
+    },
+    "scripts": {
+      "post-install-cmd": [ "./wp-setup.sh --install" ],
+      "post-update-cmd": [ "./wp-setup.sh --update" ]
+    }
+}

@@ -122,12 +122,11 @@ function newstep {
 
 function main_header {
 	echo -e "${bldred}
-     _ _       _ _        _                              
-  __| (_) __ _(_) |_ __ _| |   ___   ___ ___  __ _ _ __  
- / _\` | |/ _\` | | __/ _\` | |  / _ \ / __/ _ \/ _\` | '_ \ 
-| (_| | | (_| | | || (_| | | | (_) | (_|  __/ (_| | | | |
- \__,_|_|\__, |_|\__\__,_|_|  \___/ \___\___|\__,_|_| |_|
-         |___/                                           
+  ___                       ____       _                     _   
+ / _ \  ___ ___  __ _ _ __ |  _ \  ___| |__  _ __ __ _ _ __ | |_ 
+| | | |/ __/ _ \/ _\` | '_ \| | | |/ _ \ '_ \| '__/ _\` | '_ \| __|
+| |_| | (_|  __/ (_| | | | | |_| |  __/ |_) | | | (_| | | | | |_ 
+ \___/ \___\___|\__,_|_| |_|____/ \___|_.__/|_|  \__,_|_| |_|\__| 
 ${txtrst}
 	Digital Ocean deploy v. ${txtgrn}$debrant_version${txtrst}
 	${txtund}https://github.com/swergroup/debrant${txtreset}
@@ -140,21 +139,20 @@ function do_apt {
 		sudo rm /etc/apt/sources.list.d/grml.list
 	fi
 
-	if [ -f /srv/config/sources.list ]; then
-	  echo -e "${list} GPG keys setup"
-		# percona server (mysql)
-		apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A	2>&1 > /dev/null
-		
-		#grml
-		apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null
-		
-		# varnish
-		wget -qO- http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
+  echo -e "${list} GPG keys setup"
+	# percona server (mysql)
+	apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A	2>&1 > /dev/null
+	
+	#grml
+	apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null
+	
+	# varnish
+	wget -qO- http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
 
-	  echo -e "${list} sources.list"
-		unlink /etc/apt/sources.list
-		ln -s /srv/config/sources.list /etc/apt/sources.list
-	fi
+  echo -e "${list} sources.list"
+	unlink /etc/apt/sources.list
+	cp /srv/config/apt/sources.list /etc/apt/sources.list
+	apt-get update --assume-yes
 
 	newstep "System packages"
 	for pkg in "${apt_package_check_list[@]}"
@@ -173,7 +171,6 @@ function do_apt {
 	else
 	  echo -e "${list} Installing packages.."
 		aptitude purge ~c
-		apt-get update --assume-yes
 		apt-get install --force-yes --assume-yes ${apt_package_install_list[@]}
 		apt-get clean
 	fi
@@ -195,25 +192,26 @@ function do_mysql {
 	if [ ! -f /etc/mysql/my.cnf ]; then
 	#	mv /etc/mysql/my.cnf /etc/mysql/my.cnf-backup
 	  echo -e "${list} my.cnf setup"
-		ln -s /srv/config/my.cnf /etc/mysql/my.cnf
+		unlink /etc/mysql/my.cnf
+		cp /srv/config/mysql/my.cnf /etc/mysql/my.cnf
 		echo -e "${list} Restart service"
 		service mysql restart
-		mysql -u root -e "CREATE FUNCTION fnv1a_64 RETURNS INTEGER SONAME 'libfnv1a_udf.so'"
-		mysql -u root -e "CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so'"
-		mysql -u root -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so'"
+		mysql -u root -proot -e "CREATE FUNCTION fnv1a_64 RETURNS INTEGER SONAME 'libfnv1a_udf.so'"
+		mysql -u root -proot -e "CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so'"
+		mysql -u root -proot -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so'"
 	fi
-	if [ -f /srv/database/init-custom.sql ]
-	then
+	#if [ -f /srv/database/init-custom.sql ]
+	#then
 	  # Create the databases (unique to system) that will be imported with
 	  # the mysqldump files located in database/backups/
 	  #echo -e "${list} Custom MySQL setup..."
 		#mysql -u root < /srv/database/init-custom.sql
-	else
+		#else
 	  # Setup MySQL by importing an init file that creates necessary
 	  # users and databases that our vagrant setup relies on.
 	  #echo -e "${list} Default MySQL setup.."
 	  #mysql -u root < /srv/database/init.sql
-	fi
+		#fi
 	# Process each mysqldump SQL file in database/backups to import 
 	# an initial data set for MySQL.
 	#/srv/database/import-sql.sh
@@ -264,6 +262,24 @@ function do_php5conf {
 	#ln -sf /srv/config/php5/apc.ini /etc/php5/fpm/conf.d/apc.ini
 }
 
+
+
+function do_utils {
+	newstep "Utilities setup"
+	if which composer &>/dev/null;
+	then
+		echo -e "${list} Updating Composer.."
+		composer self-update
+	else
+		echo -e "${list} Installing Composer.."
+		curl -sS https://getcomposer.org/installer | php
+		chmod +x composer.phar
+		mv composer.phar /usr/local/bin/composer
+	fi
+	composer --version
+}
+
+
 function clean_system {
 	# cleaning
 	newstep "Housekeeping and service restart"
@@ -282,21 +298,20 @@ function main_footer {
 
 
 	cat <<BRANDING > /etc/motd
-     _ _       _ _        _                              
-  __| (_) __ _(_) |_ __ _| |   ___   ___ ___  __ _ _ __  
- / _\` | |/ _\` | | __/ _\` | |  / _ \ / __/ _ \/ _\` | '_ \ 
-| (_| | | (_| | | || (_| | | | (_) | (_|  __/ (_| | | | |
- \__,_|_|\__, |_|\__\__,_|_|  \___/ \___\___|\__,_|_| |_|
-         |___/                                           
+  ___                       ____       _                     _   
+ / _ \  ___ ___  __ _ _ __ |  _ \  ___| |__  _ __ __ _ _ __ | |_ 
+| | | |/ __/ _ \/ _\` | '_ \| | | |/ _ \ '_ \| '__/ _\` | '_ \| __|
+| |_| | (_|  __/ (_| | | | | |_| |  __/ |_) | | | (_| | | | | |_ 
+ \___/ \___\___|\__,_|_| |_|____/ \___|_.__/|_|  \__,_|_| |_|\__| 
 
 BRANDING
 
-	echo $debrant_version > /etc/digital_ocean_provision
+	echo $debrant_version > /etc/oceandebrant-version
 
-	newstep "Your ${txtred}Digital Ocean Debrant${txtreset}${bldwht} is ready!"
+	newstep "Your ${txtred}OceanDebrant${txtreset}${bldwht} is ready!"
 
 	echo -e "\n${txtwht}Code repository and issue tracking:"
-	echo -e "${txtund}https://github.com/swergroup/debrant${txtreset}\n"
+	echo -e "${txtund}https://github.com/swergroup/oceandebrant${txtreset}\n"
 
 	end_seconds=`date +%s`
 	echo -e "\n${txtwht}Provisioning complete in `expr $end_seconds - $start_seconds` seconds\n"
@@ -309,5 +324,6 @@ do_apt
 do_mysql
 do_nginx
 do_php5conf
+do_utils
 clean_system
 main_footer

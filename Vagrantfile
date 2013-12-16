@@ -15,11 +15,11 @@ Vagrant.configure("2") do |config|
   # Enable agent forwarding on vagrant ssh commands. This allows you to use identities
   # established on the host machine inside the guest. See the manual for ssh-add
   config.ssh.forward_agent = true
+	config.vm.box = "wheezy32"
 
 	config.vm.provider :virtualbox do |vb|
-		vb.vm.box = "wheezy32"
 		vb.vm.network :private_network, ip: "192.168.9.99"
-		vb.
+		end
 		
 	config.vm.provider :digital_ocean do |ocean|
 	  	ocean.vm.box = "digital_ocean"
@@ -33,6 +33,7 @@ Vagrant.configure("2") do |config|
 		
   # /srv/config/
   config.vm.synced_folder "config/", "/srv/config"
+  config.vm.synced_folder "www/", "/srv/www"
 
   # /srv/www/
   #if vagrant_version >= "1.3.0"
@@ -41,18 +42,20 @@ Vagrant.configure("2") do |config|
   #  config.vm.synced_folder "www/", "/srv/www/", :owner => "www-data", :extra => [ "dmode=775", "fmode=774" ]
   #end
 
-  # System Provisioning
+  # System provision script
   if File.exists?(File.join(vagrant_dir,'provision','10-system.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "10-system.sh" )
   end
 
-  # Utilities Provisioning
-  if File.exists?(File.join(vagrant_dir,'provision','20-utils.sh')) then
-    config.vm.provision :shell, :path => File.join( "provision", "20-utils.sh" )
+  # Custom provision script
+  if File.exists?(File.join(vagrant_dir,'provision','20-custom.sh')) then
+    config.vm.provision :shell, :path => File.join( "provision", "20-custom.sh" )
   end
 
-  # Utilities Provisioning
+  # Websites provision script
   if File.exists?(File.join(vagrant_dir,'provision','30-websites.sh')) then
     config.vm.provision :shell, :path => File.join( "provision", "30-websites.sh" )
   end
+
+end
 
