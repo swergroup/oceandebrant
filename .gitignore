@@ -1,3 +1,4 @@
 .vagrant
 www/wordpress/htdocs
 www/wordpress/vendor
+Vagrantfile
