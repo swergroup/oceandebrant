@@ -1,8 +1,10 @@
 #!/bin/bash
 
-debrant_version='0.2.1'
+debrant_version='0.3.1'
 
 ## Tunables
+
+export COMPOSER_HOME="/opt/composer";
 
 # Debian package checklist
 apt_package_check_list=(
@@ -128,9 +130,9 @@ function main_header {
 | |_| | (_|  __/ (_| | | | | |_| |  __/ |_) | | | (_| | | | | |_ 
  \___/ \___\___|\__,_|_| |_|____/ \___|_.__/|_|  \__,_|_| |_|\__| 
 ${txtrst}
-	Digital Ocean deploy v. ${txtgrn}$debrant_version${txtrst}
-	${txtund}https://github.com/swergroup/debrant${txtreset}
-	"
+VirtualBox + Digital Ocean starter kit v. ${txtgrn}$debrant_version${txtrst}
+${txtund}https://github.com/swergroup/oceandebrant${txtreset}
+"
 }
 
 function do_apt {
@@ -200,18 +202,18 @@ function do_mysql {
 		mysql -u root -proot -e "CREATE FUNCTION fnv_64 RETURNS INTEGER SONAME 'libfnv_udf.so'"
 		mysql -u root -proot -e "CREATE FUNCTION murmur_hash RETURNS INTEGER SONAME 'libmurmur_udf.so'"
 	fi
-	#if [ -f /srv/database/init-custom.sql ]
-	#then
+	if [ -f /srv/config/database/init-custom.sql ]
+	then
 	  # Create the databases (unique to system) that will be imported with
 	  # the mysqldump files located in database/backups/
-	  #echo -e "${list} Custom MySQL setup..."
-		#mysql -u root < /srv/database/init-custom.sql
-		#else
+	  echo -e "${list} Custom MySQL setup..."
+		mysql -u root < /srv/config/database/init-custom.sql
+	else
 	  # Setup MySQL by importing an init file that creates necessary
 	  # users and databases that our vagrant setup relies on.
-	  #echo -e "${list} Default MySQL setup.."
-	  #mysql -u root < /srv/database/init.sql
-		#fi
+	  echo -e "${list} Default MySQL setup.."
+	  mysql -u root < /srv/config/database/init.sql
+	fi
 	# Process each mysqldump SQL file in database/backups to import 
 	# an initial data set for MySQL.
 	#/srv/database/import-sql.sh
@@ -277,6 +279,7 @@ function do_utils {
 		mv composer.phar /usr/local/bin/composer
 	fi
 	composer --version
+	composer global require wp-cli/wp-cli=0.13.0
 }
 
 
