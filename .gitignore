@@ -2,4 +2,4 @@
 www/wordpress/htdocs
 www/wordpress/vendor
 www/wordpress/composer.lock
-Vagrantfile
+vagrant-config.yml
