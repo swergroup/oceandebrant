@@ -26,6 +26,14 @@ pass="${bldgrn} √ ${txtrst}"
 warn="${bldylw} ! ${txtrst}"
 dead="${bldred}!!!${txtrst}"
 
+function newstep {
+	echo -e "${txtrst}"
+	echo -e "${bldblu}###${txtrst} ${bldwht}$1${txtrst}"
+	echo -e "${txtrst}"
+}
+
+newstep "Virtualbox configuration"
+
 if [ ! -f /etc/skel/.zshrc ]; then
 	echo -e "${list} Fetch Zsh configuration from GRML.org .."
 	wget -q -O /etc/skel/.zshrc http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
@@ -45,12 +53,12 @@ if [ ! -f /root/.zshrc ]; then
 fi
 
 
-echo -e "${info} Composer & WordPress update"
+newstep "Composer & WordPress update"
 
 cd /srv/www/wordpress
 export COMPOSER_HOME="/opt/composer";
 
-if [ ! -f /etc/mysql/composer.lock ];
+if [ ! -f /srv/www/wordpress/composer.lock ];
 	then
 		echo -e "${list} First setup"
 		composer install
@@ -59,4 +67,9 @@ if [ ! -f /etc/mysql/composer.lock ];
 		composer selfupdate
 		composer update
 fi
+
+newstep "DNS update"
+
+echo "127.0.0.1 dev.oceandebrant.wp" >> /etc/hosts
+echo "nameserver 127.0.0.1" >> /etc/resolv.conf
 
