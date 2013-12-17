@@ -1,0 +1,13 @@
+# Personal settings
+
+hostname: "oceandebrant"
+  
+virtualbox:
+    private_ip: "192.168.9.99"
+  
+digitalocean:
+    client_id: ""
+    api_key: ""
+    image: "Debian 7.0 x64"
+    region: "Amsterdam 2"
+    private_key: "~/.ssh/id_rsa"
