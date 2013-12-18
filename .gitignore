@@ -1,5 +1,5 @@
 .vagrant
-www/wordpress/htdocs
-www/wordpress/vendor
-www/wordpress/composer.lock
+/www/wordpress/htdocs
+/www/wordpress/vendor
+/www/wordpress/composer.lock
 vagrant-config.yml
