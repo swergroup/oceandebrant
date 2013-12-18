@@ -25,29 +25,31 @@ Vagrant.configure("2") do |config|
 
   # /srv/config/
   # config.vm.synced_folder "config/", "/srv/config"
-  config.vm.synced_folder "www/", "/srv/www"
 
 	config.vm.provider :virtualbox do |vb, override|
-		override.vm.network :private_network, ip: vconfig['virtualbox']['private_ip']
-		provision_target = 'virtualbox'
+			provision_target = 'virtualbox'
+			override.vm.network :private_network, ip: vconfig['virtualbox']['private_ip']
+			config.cache.auto_detect = true
+			config.cache.enable_nfs  = true
+		  config.vm.synced_folder "www/", "/srv/www"
 		end
 		
 	config.vm.provider :digital_ocean do |ocean, override|
-	  	override.vm.box = "digital_ocean"
+			provision_target = 'digital_ocean'
+			override.vm.box = "digital_ocean"
 			override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
 			ocean.client_id = vconfig['digitalocean']['client_id']
 			ocean.api_key = vconfig['digitalocean']['api_key']
 			ocean.image = vconfig['digitalocean']['image']
 			ocean.region = vconfig['digitalocean']['region']
 			override.ssh.private_key_path = vconfig['digitalocean']['private_key']
-			provision_target = 'digital_ocean'
 	  end
 
   # System provision script
   if File.exists?(File.join(vagrant_dir,'provision','10-custom-system.sh')) then
-		config.vm.provision :shell, :path => File.join( "provision", "10-custom-system.sh" )
+		config.vm.provision :shell, :path => File.join( "provision", "10-custom-system.sh" ), :args => provision_target
 	else
-		config.vm.provision :shell, :path => File.join( "provision", "10-system.sh" )
+		config.vm.provision :shell, :path => File.join( "provision", "10-system.sh" ), :args => provision_target
   end
   # Server stack provision script
   if File.exists?(File.join(vagrant_dir,'provision','20-custom-serverstack.sh')) then

@@ -1,0 +1,57 @@
+{
+    "repositories": [
+      {
+        "type":"composer",
+        "url":"http://wpackagist.org"
+      },
+      {
+        "type": "package",
+        "package": {
+          "name": "wordpress",
+          "type": "webroot",
+          "version": "3.8",
+          "dist": {
+            "type": "zip",
+            "url": "https://github.com/WordPress/WordPress/archive/3.8.zip"
+          },
+          "require" : {
+            "fancyguy/webroot-installer": "1.0.0"
+          }
+        }
+      },
+      {
+        "type": "package",
+        "package": {
+          "name": "roots/roots",
+          "type": "wordpress-theme",
+          "version": "6.5.1",
+          "dist": {
+            "type": "zip",
+            "url": "https://github.com/roots/roots/archive/6.5.1.zip"
+          }
+        }
+      }
+    ],
+    "require": {
+      "composer/installers": "v1.0.6",
+      "fancyguy/webroot-installer": "1.0.0",
+      "php": ">=5.3.0",
+      "wordpress": "3.8",
+      "wpackagist/wordpress-importer": "*"
+    },
+    "extra": {
+      "webroot-dir": "htdocs",
+      "webroot-package": "wordpress",
+      "installer-paths": {
+        "htdocs/wp-content/plugins/{$name}" : [ 
+          "wpackagist/wordpress-importer"
+        ],
+        "htdocs/wp-content/themes/{$name}" : [
+        ]
+      }
+    },
+    "scripts": {
+      "post-install-cmd": [ "export PATH=\"/opt/composer/vendor/bin/:$PATH\"; wp core config;wp core install;wp plugin activate wordpress-importer;" ],
+      "post-update-cmd": [ "export PATH=\"/opt/composer/vendor/bin/:$PATH\"; wp core update;wp core update-db;wp plugin update --all;wp theme update --all;" ]
+    }
+}

@@ -107,11 +107,11 @@ function do_nginx {
 		
 		echo -e "${list} /etc/nginx/custom-sites"
 		case $provider in
-			'virtualbox')
-				cp /vagrant/config/nginx/sites-available/local-wordpress.conf /etc/nginx/sites-available/wordpress.conf
-				;;
 			'digital_ocean')
 				cp /vagrant/config/nginx/sites-available/remote-wordpress.conf /etc/nginx/sites-available/wordpress.conf
+				;;
+			'virtualbox', *)
+				cp /vagrant/config/nginx/sites-available/local-wordpress.conf /etc/nginx/sites-available/wordpress.conf
 				;;
 		esac
 		ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/wordpress.conf
