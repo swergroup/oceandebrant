@@ -1,5 +1,5 @@
 #!/bin/bash
-export PATH="/srv/www/wordpress/vendor/bin/:$PATH"
+export PATH="/opt/composer/vendor/bin/:$PATH"
 
 do_install(){
 	wp core config
