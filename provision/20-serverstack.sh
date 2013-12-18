@@ -108,11 +108,11 @@ function do_nginx {
 		echo -e "${list} /etc/nginx/custom-sites"
 		case $provider in
 			'virtualbox')
-		  cp /vagrant/config/nginx/sites-available/local-wordpress.conf /etc/nginx/sites-available/wordpress.conf
-			;;
+				cp /vagrant/config/nginx/sites-available/local-wordpress.conf /etc/nginx/sites-available/wordpress.conf
+				;;
 			'digital_ocean')
-		  cp /vagrant/config/nginx/sites-available/remote-wordpress.conf /etc/nginx/sites-available/wordpress.conf
-			;;
+				cp /vagrant/config/nginx/sites-available/remote-wordpress.conf /etc/nginx/sites-available/wordpress.conf
+				;;
 		esac
 		ln -s /etc/nginx/sites-available/wordpress.conf /etc/nginx/sites-enabled/wordpress.conf
 		
@@ -164,6 +164,7 @@ function do_utils {
 	fi
 	composer --version
 	composer global require wp-cli/wp-cli=0.13.0
+	composer global require psy/psysh=dev-master
 }
 
 

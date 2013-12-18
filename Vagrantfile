@@ -44,16 +44,22 @@ Vagrant.configure("2") do |config|
 	  end
 
   # System provision script
-  if File.exists?(File.join(vagrant_dir,'provision','10-system.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','10-custom-system.sh')) then
+		config.vm.provision :shell, :path => File.join( "provision", "10-custom-system.sh" )
+	else
 		config.vm.provision :shell, :path => File.join( "provision", "10-system.sh" )
   end
   # Server stack provision script
-  if File.exists?(File.join(vagrant_dir,'provision','20-serverstack.sh')) then
+  if File.exists?(File.join(vagrant_dir,'provision','20-custom-serverstack.sh')) then
+		config.vm.provision :shell, :path => File.join( "provision", "20-custom-serverstack.sh" ), :args => provision_target
+	else
 		config.vm.provision :shell, :path => File.join( "provision", "20-serverstack.sh" ), :args => provision_target
   end
   # DigitalOcean provision script
-  if File.exists?(File.join(vagrant_dir,'provision','20-virtualbox.sh')) then
-    config.vm.provision :shell, :path => File.join( "provision", "20-virtualbox.sh" )
+  if File.exists?(File.join(vagrant_dir,'provision','30-custom-setup.sh')) then
+    config.vm.provision :shell, :path => File.join( "provision", "30-custom-setup.sh" ), :args => provision_target
+	else
+    config.vm.provision :shell, :path => File.join( "provision", "30-setup.sh" ), :args => provision_target
   end
 
 end
