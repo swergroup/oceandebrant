@@ -86,7 +86,7 @@ do_dns(){
 
 
 case $provider in
-	'virtualbox')
+	'virtualbox' | *)
 		newstep "Virtualbox configuration"
 		do_zsh
 		do_wordpress

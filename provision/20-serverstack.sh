@@ -110,7 +110,7 @@ function do_nginx {
 			'digital_ocean')
 				cp /vagrant/config/nginx/sites-available/remote-wordpress.conf /etc/nginx/sites-available/wordpress.conf
 				;;
-			'virtualbox', *)
+			'virtualbox' | *)
 				cp /vagrant/config/nginx/sites-available/local-wordpress.conf /etc/nginx/sites-available/wordpress.conf
 				;;
 		esac
