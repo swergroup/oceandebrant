@@ -113,23 +113,23 @@ function newstep {
 }
 
 function do_apt {
-	newstep "APT sources.list setup"
+	newstep "APT-GET setup"
 	if [ -f /etc/apt/sources.list.d/grml.list ]; then
 		sudo rm /etc/apt/sources.list.d/grml.list
 	fi
 
-  echo -e "${list} GPG keys setup"
+  echo -e "${list} APT repositories GPG keys"
 	# percona + grml + varnish GPG keys
 	apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A	2>&1 > /dev/null
 	apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null	
 	wget -qO- http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
 
-  echo -e "${list} sources.list"
+  echo -e "${list} APT sources.list setup"
 	unlink /etc/apt/sources.list
 	cp /vagrant/config/apt/sources.list /etc/apt/sources.list
 	apt-get update --assume-yes
 
-	newstep "Build APT packages list"
+	newstep "APT packages list"
 	sys_packages=(`cat /vagrant/config/apt/packages.txt`);
 	if [ -f custom-packages.txt ];
 	then
