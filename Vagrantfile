@@ -38,11 +38,11 @@ Vagrant.configure("2") do |config|
 			provision_target = 'digital_ocean'
 			override.vm.box = "digital_ocean"
 			override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+			override.ssh.private_key_path = vconfig['digitalocean']['private_key']
 			ocean.client_id = vconfig['digitalocean']['client_id']
 			ocean.api_key = vconfig['digitalocean']['api_key']
 			ocean.image = vconfig['digitalocean']['image']
 			ocean.region = vconfig['digitalocean']['region']
-			override.ssh.private_key_path = vconfig['digitalocean']['private_key']
 	  end
 
   # System provision script

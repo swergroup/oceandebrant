@@ -172,9 +172,9 @@ function clean_system {
 	# cleaning
 	newstep "Housekeeping and service restart"
 	echo -e "${list} APT cache cleaning"
-	apt-get autoclean
-	apt-get autoremove
-	rm -f /var/cache/apt/archives/*.deb
+	#apt-get autoclean
+	#apt-get autoremove
+	#rm -f /var/cache/apt/archives/*.deb
 	echo -e "${list} Restarting services.."
 	service memcached restart
 	service mysql restart

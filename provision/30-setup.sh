@@ -57,19 +57,17 @@ do_zsh(){
 
 do_wordpress(){
 	newstep "WordPress setup"
-	export COMPOSER_HOME="/opt/composer";
 
-	if [ ! -d /srv/www/wordpress ]; then
+	if [ ! -f /srv/www/wordpress/composer.json ]; then
 		echo -e "${list} First WordPress setup"
 		mkdir /srv/www/wordpress
-		if [ ! -f /vagrant/wordpress/custom-composer.json ]; then
-			cp /vagrant/wordpress/composer.json /srv/www/wordpress/composer.json
-		else
-			cp /vagrant/wordpress/custom-composer.json /srv/www/wordpress/composer.json
+		if [ ! -f /srv/www/wordpress/composer.json ]; then
+			cp /vagrant/config/wordpress/composer.json /srv/www/wordpress/composer.json
+			cp /vagrant/config/wordpress/wp-cli-local.yml /srv/www/wordpress/wp-cli.yml
+			cd /srv/www/wordpress
+			export COMPOSER_HOME="/opt/composer";
+			composer install
 		fi
-		cp /vagrant/wordpress/wp-cli-local.yml /srv/www/wordpress/wp-cli-local.yml
-		cd /srv/www/wordpress
-		composer install
 	else
 		cd /srv/www/wordpress
 		echo -e "${list} WordPress Update"
