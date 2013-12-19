@@ -113,19 +113,15 @@ function newstep {
 }
 
 function do_apt {
-	newstep "APT sources"
+	newstep "APT sources.list setup"
 	if [ -f /etc/apt/sources.list.d/grml.list ]; then
 		sudo rm /etc/apt/sources.list.d/grml.list
 	fi
 
   echo -e "${list} GPG keys setup"
-	# percona server (mysql)
+	# percona + grml + varnish GPG keys
 	apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A	2>&1 > /dev/null
-	
-	#grml
-	apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null
-	
-	# varnish
+	apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null	
 	wget -qO- http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
 
   echo -e "${list} sources.list"
@@ -133,7 +129,24 @@ function do_apt {
 	cp /vagrant/config/apt/sources.list /etc/apt/sources.list
 	apt-get update --assume-yes
 
-	newstep "System packages"
+	newstep "Build APT packages list"
+	sys_packages=(`cat /vagrant/config/apt/packages.txt`);
+	if [ -f custom-packages.txt ];
+	then
+		custom_packages=(`cat /vagrant/config/apt/custom-packages.txt`);
+	fi
+
+	OLDIFS="$IFS"
+	IFS=$'\n'
+	combined=(`for R in "${sys_packages[@]}" "${custom_packages[@]}" ; do echo "$R" ; done | sort -du`)
+	IFS="$OLDIFS"
+
+	for i in ${combined[@]}
+	do
+		echo $i
+	done
+	
+	newstep "Parse APT package list"
 	for pkg in "${apt_package_check_list[@]}"
 	do
 		if dpkg -s $pkg 2>&1 | grep -q 'Status: install ok installed';
