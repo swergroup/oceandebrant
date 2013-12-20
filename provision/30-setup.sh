@@ -84,14 +84,14 @@ do_dns(){
 
 
 case $provider in
-	'virtualbox' | *)
-		newstep "Virtualbox configuration"
+	'virtualbox' | 'vmware_fusion' | *)
+		newstep "Virtualbox/VMware configuration"
 		do_zsh
 		do_wordpress
 		do_dns 'dev.oceandebrant.wp'
 		;;
 	'digital_ocean')
-		newstep "Virtualbox configuration"
+		newstep "Digital Ocean configuration"
 		do_zsh
 		do_wordpress
 		do_dns 'remote.oceandebrant.wp'
