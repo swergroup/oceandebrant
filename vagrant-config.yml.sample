@@ -5,6 +5,9 @@ hostname: "oceandebrant"
 virtualbox:
     private_ip: "192.168.9.99"
   
+vmware_fusion:
+    private_ip: "192.168.8.88"
+  
 digitalocean:
     client_id: ""
     api_key: ""

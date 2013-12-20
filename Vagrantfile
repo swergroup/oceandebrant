@@ -9,6 +9,10 @@ vconfig = YAML::load_file( vagrant_dir + "/vagrant-config.yml" )
 
 Vagrant.configure("2") do |config|
 
+  config.vm.provider :virtualbox do |v|
+    v.customize ["modifyvm", :id, "--memory", 512]
+  end
+
   # Store the current version of Vagrant for use in conditionals when dealing
   # with possible backward compatible issues.
   vagrant_version = Vagrant::VERSION.sub(/^v/, '')
@@ -29,11 +33,19 @@ Vagrant.configure("2") do |config|
 	config.vm.provider :virtualbox do |vb, override|
 			provision_target = 'virtualbox'
 			override.vm.network :private_network, ip: vconfig['virtualbox']['private_ip']
-			config.cache.auto_detect = true
-			config.cache.enable_nfs  = true
-		  config.vm.synced_folder "www/", "/srv/www"
+			# config.cache.auto_detect = true
+			# config.cache.enable_nfs  = true
+			config.vm.synced_folder "www/", "/srv/www"
 		end
 		
+	config.vm.provider :vmware_fusion do |vmware, override|
+			provision_target = 'vmware_fusion'
+			override.vm.box = 'debian70-x64-vmware'
+			override.vm.network :private_network, ip: vconfig['vmware_fusion']['private_ip']
+			override.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/debian-70rc1-x64-vf503-nocm.box'
+		  config.vm.synced_folder "www/", "/srv/www"
+		end
+
 	config.vm.provider :digital_ocean do |ocean, override|
 			provision_target = 'digital_ocean'
 			override.vm.box = "digital_ocean"
