@@ -4,5 +4,5 @@
 | |_| | (_|  __/ (_| | | | | |_| |  __/ |_) | | | (_| | | | | |_ 
  \___/ \___\___|\__,_|_| |_|____/ \___|_.__/|_|  \__,_|_| |_|\__| 
  
-VirtualBox + DigitalOcean Vagrant starter kit v.0.3.1
+VirtualBox + DigitalOcean Vagrant starter kit v.0.4.0
 https://github.com/swergroup/oceandebrant
