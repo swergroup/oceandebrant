@@ -18,7 +18,7 @@ libdbi-perl
 libnet-daemon-perl
 libmemcache0
 libmemcached10
-libmysqlclient18=5.5.34-rel32.0-591.wheezy
+libmysqlclient18
 localepurge
 lynx
 mailutils
