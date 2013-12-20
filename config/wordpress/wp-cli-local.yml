@@ -1,6 +1,5 @@
 url: http://dev.oceandebrant.wp
 path: /srv/www/wordpress/htdocs/
-user: oceandebrant
 
 core config:
   dbname: wp_oceandebrant
