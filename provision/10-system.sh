@@ -46,10 +46,10 @@ function do_apt {
 		sudo rm /etc/apt/sources.list.d/grml.list
 	fi
 
-  echo -e "${list} APT repositories GPG keys"
+  echo -e "${list} APT GPG keys"
 	# percona + grml + varnish GPG keys
 	apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A	2>&1 > /dev/null
-	apt-key adv --keyserver subkeys.pgp.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null	
+	apt-key adv --keyserver keys.gnupg.net --recv-keys F61E2E7CECDEA787	2>&1 > /dev/null	
 	wget -qO- http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
 
   echo -e "${list} APT sources.list setup"
@@ -69,13 +69,13 @@ function do_apt {
 	combined=(`for R in "${sys_packages[@]}" "${custom_packages[@]}" ; do echo "$R" ; done | sort -du`)
 	IFS="$OLDIFS"
 
-	for i in ${combined[@]}
-	do
-		echo $i
-	done
+	#for i in ${combined[@]}
+	#do
+	#	echo $i
+	#done
 	
 	newstep "Parse APT package list"
-	for pkg in "${apt_package_check_list[@]}"
+	for pkg in "${combined[@]}"
 	do
 		if dpkg -s $pkg 2>&1 | grep -q 'Status: install ok installed';
 		then 
